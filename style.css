@@ -1,0 +1,29 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+  text-align: center;
+  background-color: #ffffff;
+}
+
+h1 {
+  margin-top: 60px;
+  margin-bottom: 50px;
+  font-size: 3rem;
+}
+
+.link-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+}
+
+a {
+  font-size: 1.5rem;
+  color: #0066cc;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
