@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>中心とるためのヤツ</title> 
+  <script src="../../lib/jspsych/dist/jspsych.js"></script>
+  <script src="../../lib/jspsych/dist/plugin-html-button-response.js"></script>
+  <script src="../../lib/jspsych/dist/plugin-html-keyboard-response.js"></script>
+  <link rel="stylesheet" href="../../lib/jspsych/dist/jspsych.css">
+  <script src = ../../lib/jspsych/dist/plugin-fullscreen.js></script>
+</head>
+<body></body>
+<script>
+var jsPsych = initJsPsych({});
+
+//ブランク
+var blank = {
+  type : jsPsychHtmlKeyboardResponse,
+  stimulus : '+',
+  choices : 'NO_KEYS'
+};
+
+//フルスクはじまり
+var start_fullscreen = {
+  type: jsPsychFullscreen,
+  message: "<p>ウィンドウサイズを最大化します。赤いボタンを押してください。</p>",
+  button_label: "",
+  fullscreen_mode: true, // 全画面表示にする
+};
+jsPsych.run([start_fullscreen,blank]); // 提示順序の指定
+
+</script>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="../jspsych-dist/dist/jspsych.js"></script>
+    <script src="../jspsych-dist/dist/plugin-html-button-response.js"></script>
+    <script src="../jspsych-dist/dist/plugin-html-keyboard-response.js"></script>
+    <script src="../jspsych-dist/dist/plugin-preload.js"></script>
+    <script src="../jspsych-psychophysics.js"></script>
+    <link rel="stylesheet" href="../jspsych-dist/dist/jspsych.css"></link>
+</head>
+<body></body>
+<script>
+    // This file demonstrates how to use the drawFunc.
+
+    const jsPsych = initJsPsych()
+
+    var canvas_width = 600;
+    var canvas_height = 600;
+
+    const instruction = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: 'Click on the Start button.',
+        choices: [' '],
+        prompt: "This is a sample program for the jspsych-psychophysics plugin."
+    }
+
+    const img_file_name = './img/tape.png'
+
+    // Preloading files are needed to present the stimuli accurately.
+    const preload = {
+        type: jsPsychPreload,
+        images: [img_file_name],
+    }
+
+
+    const part_of_image = {
+        obj_type: 'image',
+        file: img_file_name,
+        startX: 100,
+        startY: 100,
+    }
+    
+    const trial = {
+        type: jsPsychPsychophysics,
+        stimuli: [part_of_image],
+        choices: ['f','j'],
+        canvas_width: canvas_width,
+        canvas_height:canvas_height,
+        
+        background_color: '#DDDDDD',
+        trial_duration: 500 
+    }
+
+    var blank = {
+        type : jsPsychHtmlKeyboardResponse,
+        stimulus : '+',
+        choices : 'NO_KEYS',
+        trial_duration : 500
+    };
+
+    jsPsych.run([preload, instruction, blank,trial])
+</script>
+
+</html>

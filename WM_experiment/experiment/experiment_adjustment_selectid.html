@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>調整法 ID選択フォーム</title> 
+  <script src="../../lib/jspsych/dist/jspsych.js"></script>
+  <script src="../../lib/jspsych/dist/plugin-html-button-response.js"></script>
+  <script src="../../lib/jspsych/dist/plugin-html-keyboard-response.js"></script>
+  <link rel="stylesheet" href="../../lib/jspsych/dist/jspsych.css">
+  <style>
+  .red { color: red; }
+</style>
+</head>
+<body></body>
+<script>
+let target = null;
+let prevButtons = [], prevAxes = []; // 前フレーム状態（変化検出用）
+
+//キー対応表
+const keyMap = {
+  14: "ArrowLeft",  
+  15: "ArrowRight", 
+  1: " "       // Aボタン
+};
+
+function sendKeyEvent(key, type) {
+  const ev = new KeyboardEvent(type, { key, bubbles:true, composed:true, cancelable:true });
+  window.dispatchEvent(ev);
+  document.dispatchEvent(ev);
+  if (document.body) document.body.dispatchEvent(ev);
+}
+
+
+addEventListener("gamepadconnected", e => { if (target===null) target = e.gamepad.index; });
+addEventListener("gamepaddisconnected", e => { if (e.gamepad.index===target) target=null; });
+
+function loop(){
+
+    const pads = navigator.getGamepads();
+    const gp = target != null ? pads[target] : Array.from(pads).find(p => p && p.connected);
+
+
+    if (gp && gp.connected) {
+    // --- ボタンの変化（押された/離された）だけログ ---
+    if (prevButtons.length !== gp.buttons.length) {
+  prevButtons = new Array(gp.buttons.length).fill(false);
+}
+
+    for (let i = 0; i < gp.buttons.length; i++) {
+      const nowPressed = !!gp.buttons[i].pressed;
+      const wasPressed = !!prevButtons[i];
+
+
+      if (nowPressed !== wasPressed) {
+        console.log(`Button ${i} ${nowPressed ? "DOWN" : "UP"}`);
+      }
+
+      if (nowPressed && !wasPressed) {
+  // 押された瞬間
+     if (keyMap[i]) sendKeyEvent(keyMap[i], "keydown");
+    }
+     if (!nowPressed && wasPressed) {
+  // 離された瞬間
+     if (keyMap[i]) sendKeyEvent(keyMap[i], "keyup");
+    }
+      prevButtons[i] = nowPressed;
+    }
+}
+  requestAnimationFrame(loop);
+}
+loop();
+
+
+
+
+var query = new URLSearchParams(window.location.search);
+var jsPsych = initJsPsych({});
+var debugmode
+var exid 
+//条件選択
+var select_extype = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `<p>実験者の指示に従い，十字キーの左右ボタンを押して実験を選択してください。</p>`+
+  `<p>正しく選択できたら，<span class="red"><b>赤いボタン</b></span>で決定してください。</p>`,
+  choices: "NO_KEYS",
+  on_load: () => {
+    const prompt = document.querySelector("#prompt");
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") {
+        prompt.innerHTML = `<span class="red"><b><u>【0:縦比較】</u></b></span>【1:横比較】`;
+         exid = 0
+
+      } else if (e.key === "ArrowRight") {
+        prompt.innerHTML = `【0:縦比較】<span class="red"><b><u>【1:横比較】</u></b></span>`;
+        exid=1
+      } else if (e.key === " ") {
+        if(exid==0||exid==1){
+        jsPsych.finishTrial();
+        query.set("exid", exid);
+        window.location.href = `experiment_adjustment.html?`+query.toString();
+        }
+      }
+    });
+  },
+  prompt: `<p id="prompt">【0:縦比較】【1:横比較】</p>`, 
+};
+//A:縦，B:横
+
+jsPsych.run([select_extype]);
+
+
+</script>
+</html>
