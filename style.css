@@ -17,6 +17,12 @@ h1 {
   gap: 24px;
   align-items: center;
 }
+.stydy {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+}
 
 a {
   font-size: 1.5rem;
