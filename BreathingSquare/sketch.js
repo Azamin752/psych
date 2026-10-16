@@ -32,10 +32,10 @@
     r = 125;             // 各円の直径（元のcircle()の第3引数）
     a = 0;
     l = R / sqrt(2);
-    speed = 0.025;       // 円：元コードの1フレームあたりの回転角（rad）
+    speed = 0;       // 円：元コードの1フレームあたりの回転角（rad）
 
     a_square = 0;
-    speed_square = 0.01; // 四角形：同じ単位
+    speed_square = 0.02; // 四角形：同じ単位
 
     resizeCanvas();
     connectControls("circle", speed,
