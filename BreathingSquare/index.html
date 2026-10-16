@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>円と四角形の回転</title>
+  <style>
+    * { box-sizing: border-box; }
+    html { color-scheme: light; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100svh;
+      padding: 24px;
+      display: grid;
+      place-items: center;
+      background: #fff;
+      color: #292929;
+      font-family: system-ui, -apple-system, "Segoe UI", "Noto Sans JP", sans-serif;
+    }
+    main {
+      display: grid;
+      grid-template-columns: 400px 300px;
+      align-items: center;
+      gap: 40px;
+      max-width: 100%;
+    }
+    canvas {
+      display: block;
+      width: 400px;
+      height: auto;
+      max-width: 100%;
+      aspect-ratio: 1;
+      background: rgb(220, 220, 220);
+    }
+    .controls { min-width: 0; }
+    fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
+    fieldset + fieldset { margin-top: 30px; }
+    legend {
+      width: 100%;
+      margin-bottom: 17px;
+      padding: 0 0 10px;
+      border-bottom: 1px solid #dedede;
+      font-size: 15px;
+      font-weight: 650;
+    }
+    .control + .control { margin-top: 16px; }
+    .control-label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 3px;
+      font-size: 13px;
+    }
+    .unit { color: #787878; font-size: 12px; }
+    input[type="number"] {
+      width: 104px;
+      padding: 5px 7px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: #fff;
+      color: inherit;
+      text-align: right;
+      font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+      font-size: 14px;
+      font-variant-numeric: tabular-nums;
+    }
+    input[type="range"] {
+      display: block;
+      width: 100%;
+      height: 26px;
+      margin: 0;
+      accent-color: #4b4b4b;
+      cursor: pointer;
+      touch-action: pan-y;
+    }
+    input:focus-visible, button:focus-visible {
+      outline: 2px solid #737373;
+      outline-offset: 4px;
+      border-radius: 2px;
+    }
+    .legend-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 30px;
+    }
+    button {
+      padding: 6px 11px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: #fff;
+      color: inherit;
+      font: inherit;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    button:hover { background: #f2f2f2; }
+    button:active { background: #e7e7e7; }
+    noscript { font-size: 14px; }
+    @media (max-width: 790px) {
+      main { grid-template-columns: minmax(0, 400px); gap: 28px; }
+      body { padding: 20px; }
+      canvas { width: 100%; }
+    }
+  </style>
+  <script src="sketch.js" defer></script>
+</head>
+<body>
+  <main aria-label="円と四角形の回転">
+    <canvas id="canvas" width="400" height="400"
+      aria-label="灰色の背景に、赤い四角形と、その周囲を公転する4つの赤い円。図形の輪郭は白。">
+      この表示にはCanvas対応のブラウザが必要です。
+    </canvas>
+
+    <div class="controls">
+      <fieldset>
+        <legend><span class="legend-row">
+          <span>周囲の円</span>
+          <button id="circle-visibility" type="button" aria-controls="canvas">円を隠す</button>
+        </span></legend>
+        <div class="control">
+          <div class="control-label">
+            <label for="circle-speed">公転速度</label>
+            <input id="circle-speed-value" type="number" min="-0.100" max="0.100"
+              step="0.001" value="0.025" aria-label="周囲の円の速度" autocomplete="off">
+          </div>
+          <input id="circle-speed" type="range" min="-0.100" max="0.100"
+            step="0.001" value="0.025">
+        </div>
+        <div class="control">
+          <div class="control-label">
+            <label for="circle-angle">公転角度 <span class="unit">（°）</span></label>
+            <input id="circle-angle-value" type="number" min="0" max="360"
+              step="0.1" value="0.0" aria-label="周囲の円の角度（度）" autocomplete="off">
+          </div>
+          <input id="circle-angle" type="range" min="0" max="360"
+            step="0.1" value="0">
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="legend-row">中央の四角形</span></legend>
+        <div class="control">
+          <div class="control-label">
+            <label for="square-speed">回転速度</label>
+            <input id="square-speed-value" type="number" min="-0.100" max="0.100"
+              step="0.001" value="0.010" aria-label="中央の四角形の速度" autocomplete="off">
+          </div>
+          <input id="square-speed" type="range" min="-0.100" max="0.100"
+            step="0.001" value="0.010">
+        </div>
+        <div class="control">
+          <div class="control-label">
+            <label for="square-angle">回転角度 <span class="unit">（°）</span></label>
+            <input id="square-angle-value" type="number" min="0" max="360"
+              step="0.1" value="0.0" aria-label="中央の四角形の角度（度）" autocomplete="off">
+          </div>
+          <input id="square-angle" type="range" min="0" max="360"
+            step="0.1" value="0">
+        </div>
+      </fieldset>
+    </div>
+    <noscript>JavaScriptを有効にすると、図形とスライダーが動作します。</noscript>
+  </main>
+</body>
+</html>
